@@ -1,0 +1,60 @@
+<head>
+    <title>Extração de Dados Twitter</title>
+</head>
+
+<body>
+  <div class="topo">
+    <ol class="breadcrumb">
+      <span class="icon-thumbs-up" aria-hidden="true"></span>
+      <li><h5>Extração e Analise de Dados do Twitter</h5></li>
+    </ol>
+  </div>
+
+<div class="container-fluid">
+<div class="well well-large">
+        <h5>TWEETS EXTRAIDO</h5>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID Tweet</th>
+                <th>Tweet</th>
+                <th>Idioma</th>
+                <th>Data da criação</th>
+                <th>Hora da criação</th>
+                <th>Localizacao</th>
+                <th>Favoritos</th>
+                <th>Retweet</th>
+                <th>Tag associada</th>
+                <th>Data de extração</th>
+                <th>Criador</th>
+                <th>Dispositivo</th>
+                
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @tweet_dbs.each do |tweet_db| %>
+                <tr>
+                  <td><%= tweet_db.id_tweet %></td>
+                  <td><%= tweet_db.tweet %></td>
+                  <td><%= tweet_db.idioma %></td>
+                  <td><%= tweet_db.data %></td>
+                  <td><%= tweet_db.hora_criacao %></td>
+                  <td><%= tweet_db.localizacao %></td>
+                  <td><%= tweet_db.favoritos %></td>
+                  <td><%= tweet_db.retweet %></td>
+                  <td><%= tweet_db.tag_associada %></td>
+                  <td><%= tweet_db.hora_extracao %></td>
+                  <td><%= tweet_db.criador %></td>
+                  <td><%= tweet_db.dispositivo %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          
+          <br>
+    
+      </div>
+    </div>
+</body>

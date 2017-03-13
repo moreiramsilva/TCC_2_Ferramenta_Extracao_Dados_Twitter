@@ -1,0 +1,56 @@
+<head>
+    <title>Extração de Dados Twitter</title>
+</head>
+
+<body>
+  <div class="topo">
+    <ol class="breadcrumb">
+
+      <span class="icon-thumbs-up" aria-hidden="true"></span>
+      <li><h5>Extração e Analise de Dados do Twitter</h5></li>
+
+    </ol>
+
+  </div>
+
+<div class="container-fluid">
+<div class="well well-large">
+      <h5>
+      <%= link_to 'Inicio', inicios_path ,  :class => "btn btn-small" %>
+      
+      <span class="icon-thumbs-up" aria-hidden="true"></span>
+      TWEETS EXTRAIDOS  
+      </h5>
+      
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Tweet</th>
+                <th>Data</th>
+                <th>Localizacao</th>
+                <th>Favoritos</th>
+                <th>Retweet</th>
+                <th>Criador</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @tweet_dbs.each do |tweet_db| %>
+                <tr>
+                  <td><%= tweet_db.tweet %></td>
+                  <td><%= tweet_db.data %></td>
+                  <td><%= tweet_db.localizacao %></td>
+                  <td><%= tweet_db.favoritos %></td>
+                  <td><%= tweet_db.retweet %></td>
+                  <td><%= tweet_db.criador %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          
+          <br>
+    
+      </div>
+    </div>
+</body>

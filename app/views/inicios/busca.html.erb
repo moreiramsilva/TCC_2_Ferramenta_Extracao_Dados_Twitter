@@ -1,0 +1,485 @@
+
+<head>
+    <title>Extração de Dados Twitter</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcm0ATxCA41PIHAWaFl5jmen2Lhj0Yv0o&callback=drawMap"
+  type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+      google.charts.load("current", {packages:["corechart", "geochart", "bar","map"]});
+      google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawChart2);
+      google.charts.setOnLoadCallback(drawChart5);
+      google.charts.setOnLoadCallback(drawStuff);
+      google.charts.setOnLoadCallback(drawRegionsMap);
+      google.charts.setOnLoadCallback(drawMap);
+      google.charts.setOnLoadCallback(drawChart3);
+
+      
+      var data_tweet = <%= raw $dat%>;
+      var dispositivos = <%= raw $dis%>;
+      var locais0 = <%= raw $cidd%>;
+      var locais = <%= raw $loc%>;
+      var txt = <%= raw $ling %>;
+      var horario = <%= raw $hor %>;
+      var skillToDraw = <%= raw $txt %>;
+      var sentimento = <%= raw $sent %>;
+
+
+      function drawMap() {
+      var data4 = google.visualization.arrayToDataTable(locais0);
+
+      var options4 = { showTip: true };
+
+      var map = new google.visualization.Map(document.getElementById('chart_div'));
+
+      map.draw(data4, options4);
+  }
+
+      function drawRegionsMap() {
+
+        var data0 = google.visualization.arrayToDataTable(locais);
+
+        var options0 = {colorAxis: {colors: ['DeepSkyBlue', 'Yellow', 'OrangeRed']}};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data0, options0);
+      }
+
+      function drawChart() {
+        var data1 = google.visualization.arrayToDataTable(dispositivos);
+
+        var options1 = {
+          title: 'Dispositivos',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data1, options1);
+      }
+          
+      function drawChart2() {
+        var data2 = google.visualization.arrayToDataTable(data_tweet);
+
+        var options2 = {
+          title: 'Frequência dos Tweets por Datas',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data2, options2);
+      }
+
+      function drawChart5() {
+        var data5 = google.visualization.arrayToDataTable(horario);
+
+        var options5 = {
+          title: 'Frequência dos Tweets por horarios',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
+
+        chart.draw(data5, options5);
+      }
+
+      function drawStuff() {
+        var data3 = new google.visualization.arrayToDataTable(txt);
+
+        var options3 = {width: 700,
+          legend: { position: 'none' },
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Idioma dos Tweets'} // Top x-axis.
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        // Convert the Classic options to Material options.
+        chart.draw(data3, google.charts.Bar.convertOptions(options3));
+      }
+
+      function drawChart3() {
+        var data9 = google.visualization.arrayToDataTable(sentimento);
+
+        var options9 = {
+          title: 'Sentimentos Tweets em Inglês',
+          is3D: true,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data9, options9);
+      }
+
+    </script>
+</head>
+
+<body>
+  <div class="topo">
+    <ol class="breadcrumb">
+      <span class="icon-thumbs-up" aria-hidden="true"></span>
+      <li><h5>Extração e Analise de Dados do Twitter</h5></li>
+    </ol>
+  </div>
+
+<div class="container-fluid">
+    <div class="row">
+
+    <div class="span5">
+        
+        <div class="well well-large">    
+        <%= link_to 'Nova Busca', inicios_path ,  :class => "btn btn-large btn-block" %>
+
+        <%= link_to 'Deletar Registros', inicios_excluir_path(:arg => @parametro) , :class => "btn btn-large btn-block" %>
+
+        <%= link_to 'Todos os Tweets', inicios_exibir_path(:arg => @parametro) , :class => "btn btn-large btn-block" %>
+
+
+        <%= image_tag "icone.png" %>
+      </div>
+      </div>
+			
+	<div class="span10">
+
+		
+       	<div class="well well-large">
+       	
+       		<table class="table table-striped">
+       			<tr>
+       				<td>Topico:</td>
+       				<td><%= @parametro %></td>
+       			</tr>
+       			<tr>
+       				<td>Quantidade de Tweet's extraidos:</td>
+       				<td><%= $contador %></td>
+       			</tr>
+       			<tr>
+       				<td>Quantidade de Tweet's com GeoCode integrado:</td>
+              <td><%= $contador_loc %></td>
+       			</tr>
+			   </table>
+
+        <div class="accordion" id="accordion2">
+          <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse10">
+                  <span class="icon-plus-sign" aria-hidden="true"></span>
+                 NUVEM DE PALAVRAS
+                </a>
+            </div>
+            <div id="collapse10" class="accordion-body collapse">
+                <div class="accordion-inner">
+
+                <div id="hidden" onkeyup="d3.layout.cloud()"> </div>
+                <div id="cloud"> </div>
+                <script>
+                // Next you need to use the layout script to calculate the placement, rotation and size of each word:
+                var width = 700;
+                var height = 700;
+                var fill = d3.scale.category20();
+
+                  
+                     d3.layout.cloud()
+                      .size([width, height])
+                      .words(skillToDraw)
+                      .rotate(function() {
+                        return ~~(Math.random() * 2) * 90;
+                      })
+                      .font("Impact")
+                      .fontSize(function(d) {
+                        return d.size;
+                      })
+                      .on("end", drawSkillCloud)
+                      .start();
+
+
+                // Finally implement `drawSkillCloud`, which performs the D3 drawing:
+
+                    // apply D3.js drawing API
+                    function drawSkillCloud(words) {
+                      d3.select("#cloud").append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(" + ~~(width / 2) + "," + ~~(height / 2) + ")")
+                        .selectAll("text")
+                        .data(words)
+                        .enter().append("text")
+                        .style("font-size", function(d) {
+                          return d.size + "px";
+                        })
+                        .style("-webkit-touch-callout", "none")
+                        .style("-webkit-user-select", "none")
+                        .style("-khtml-user-select", "none")
+                        .style("-moz-user-select", "none")
+                        .style("-ms-user-select", "none")
+                        .style("user-select", "none")
+                        .style("cursor", "default")
+                        .style("font-family", "Impact")
+                        .style("fill", function(d, i) {
+                          return fill(i);
+                        })
+                        .attr("text-anchor", "middle")
+                        .attr("transform", function(d) {
+                          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .text(function(d) {
+                          return d.text;
+                        });
+                    }
+                    
+                // set the viewbox to content bounding box (zooming in on the content, effectively trimming whitespace)
+
+                    var svg = document.getElementsByTagName("svg")[0];
+                    var bbox = svg.getBBox();
+                    var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+                    svg.setAttribute("viewBox", viewBox);
+
+                  </script>
+                </div>
+            </div>
+          </div>
+          
+          <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse30">
+                  <span class="icon-plus-sign" aria-hidden="true"></span>
+                    SENTIMENTOS DOS TWEET EM INGLÊS
+                </a>
+            </div>
+            <div id="collapse30" class="accordion-body collapse">
+                <div class="accordion-inner">
+              
+                  <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+                  <br>
+                  <br>
+                  <h3>Obs.: A analise de sentimentos é apenas realizada sobre os Tweets em Inglês.</h3>
+                  <br>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Emoticon Frequentes</th>
+                      </tr>
+                    </thead>
+
+                  <tbody>
+                    <% conca_emoticon = " " %>
+                    <% $emoji.each do |emoticon| %>
+                      <% conca_emoticon += emoticon[0] %>
+                    <% end %>
+                    <tr>
+                      <td><h1> <%= conca_emoticon %> </h1></td>
+                    </tr>
+                  </tbody>
+                </table>
+                  <br>
+                </div>
+            </div>
+          </div>
+
+          <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse5">
+                  <span class="icon-plus-sign" aria-hidden="true"></span>
+                    TWEET MAIS FAVORITADO
+                </a>
+            </div>
+            <div id="collapse5" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Tweet</th>
+                        <th>Favoritos</th>
+                        <th>Retweet</th>
+                        <th>Data de Criação</th>
+                        <th>Criador</th>
+                      </tr>
+                    </thead>
+
+                  <tbody>
+                    <% @favoritos.each do |favoritos| %>
+                      <tr>
+                        <td><%= favoritos.tweet %></td>
+                        <td><%= favoritos.favoritos %></td>
+                        <td><%= favoritos.retweet %></td>
+                        <td><%= favoritos.data %></td>
+                        <td><%= favoritos.criador %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+                  <br>
+                </div>
+            </div>
+          </div>
+
+          <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse6">
+                  <span class="icon-plus-sign" aria-hidden="true"></span>
+                    TWEET MAIS RETWEETADO
+                </a>
+            </div>
+            <div id="collapse6" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Tweet</th>
+                        <th>Favoritos</th>
+                        <th>Retweet</th>
+                        <th>Data de Criação</th>
+                        <th>Criador</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% @retweetados.each do |retweetados| %>
+                        <tr>
+                          <td><%= retweetados.tweet %></td>
+                          <td><%= retweetados.favoritos %></td>
+                          <td><%= retweetados.retweet %></td>
+                          <td><%= retweetados.data %></td>
+                          <td><%= retweetados.criador %></td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                  <br>
+                </div>
+            </div>
+          </div>
+
+          <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse7">
+                  <span class="icon-plus-sign" aria-hidden="true"></span>
+                  MENÇOES DOS TWEETS POR CIDADES
+                </a>
+            </div>
+            <div id="collapse7" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  
+                  <div id="chart_div"></div>
+                
+                </div>
+            </div>
+          </div>
+
+  				<div class="accordion-group">
+    				<div class="accordion-heading">
+      					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+        					<span class="icon-plus-sign" aria-hidden="true"></span>
+        					GRAFICO DE REGIÃO
+      					</a>
+    				</div>
+    				<div id="collapseOne" class="accordion-body collapse">
+      					<div class="accordion-inner">
+        					
+
+          					<div id="regions_div" style="width: 700px; height: 600px;"></div>
+      					
+      					</div>
+    				</div>
+  				</div>
+
+  			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+        				<span class="icon-plus-sign" aria-hidden="true"></span>
+        				IDIOMA DOS TWEETS
+      				</a>
+    			</div>
+    			<div id="collapseTwo" class="accordion-body collapse">
+      				<div class="accordion-inner">
+
+        				<div id="top_x_div" style="width: 700px; height: 500px;"></div>
+      				  
+                <br>
+                <table class="table table-striped">
+                <h3> RESULTADO ALGORITMO APRIORI </h3>
+                <thead>
+                  <tr>
+                	<th>FREQUENCIA (%)</th>
+                	<th>RELAÇÃO DOS ITEMs</th>
+                  </tr>
+                </thead>
+                 <% $mining.each do |miner| %>
+                    <tr>
+                		<td><%= miner[1].to_i %> % dos items </td>
+                		<td>{ <%= miner[0].split("=>").first%> } estão relacionados com o item { <%= miner[0].split("=>").last%> } </td>
+                	</tr>
+                    <% end %>
+                 </table>
+      				</div>
+    			</div>
+  			</div>
+
+  			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse3">
+        				<span class="icon-plus-sign" aria-hidden="true"></span>
+        				MEIOS UTILIZADOS PARA TWEETAR
+      				</a>
+    			</div>
+    			<div id="collapse3" class="accordion-body collapse">
+      				<div class="accordion-inner">
+
+        				<div id="donutchart" style="width: 700px; height: 600px;"></div>
+      				
+              <br>
+               <table class="table table-striped">
+                <h3> RESULTADO ALGORITMO APRIORI </h3>
+               <thead>
+                <tr>
+                	<th>FREQUENCIA (%)</th>
+                	<th>RELAÇÃO DOS ITEMs</th>
+                </tr>
+              </thead>
+              <% $mining2.each do |miner| %>
+                <tr>
+                	<td><%= miner[1].to_i %> % dos items </td>
+                	<td>{ <%= miner[0].split("=>").first%> } estão relacionados com o item { <%= miner[0].split("=>").last%> } </td>
+                </tr>
+              <% end %>
+              </table>
+      				</div>
+    			 </div>
+  			 </div>
+
+  			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse4">
+        				<span class="icon-plus-sign" aria-hidden="true"></span>
+        				DATA E HORA DOS TWEETS
+      				</a>
+    			</div>
+    			<div id="collapse4" class="accordion-body collapse">
+      				<div class="accordion-inner">
+
+        				<div id="curve_chart" style="width: 700px; height: 600px"></div>
+
+                		<div id="linechart_material" style="width: 700px; height: 600px"></div>
+                <br>
+      				</div>
+    			</div>
+  			</div>
+       </div>
+      </div>
+		
+	</div>
+</div>
+</body>
+
+<footer>
+</footer>

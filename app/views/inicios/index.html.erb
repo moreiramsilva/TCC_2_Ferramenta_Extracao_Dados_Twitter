@@ -1,0 +1,80 @@
+
+<head>
+
+    <title>Extração de Dados Twitter</title>
+
+    <script>
+    function alterarImagem(objeto, caminhoNovaImagem){        
+      document.getElementById(objeto).src = caminhoNovaImagem; 
+    }
+    </script>
+  
+</head>
+
+<body>
+  <div class="topo">
+    <ol class="breadcrumb">
+      <span class="icon-thumbs-up" aria-hidden="true"></span>
+      <li><h5>Extração e Analise de Dados do Twitter</h5></li>
+    </ol>
+  </div>
+
+<div class="container-fluid">
+    <div class="row">
+    	<div class="span5">
+    		
+    		<div id="conteudo" class="well well-large">    
+
+
+          <H5>Pesquise por uma Tag ou Assunto:</H5>
+    			<%= form_tag("/inicios/busca", method: "get") do %>
+  				<%= text_field_tag(:q) %>
+          <span class="icon-search" aria-hidden="true"></span>
+
+          <h5>Tipo de analise:</h5>
+          <%= radio_button_tag(:tipo, "atual" , checked = true) %> Tempo real.
+          <%= radio_button_tag(:tipo, "historico") %> Dados Historicos.
+          
+
+          <h5>Tipo de resultados:</h5>
+          <%= radio_button_tag(:resultado, "recent") %> Os mais recentes.
+          <br>
+          <%= radio_button_tag(:resultado, "popular") %> Os mais populares.
+          <br>
+          <%= radio_button_tag(:resultado, "mixed" , checked = true) %> Incluir ambos os resultados.
+          <br>
+
+          <h5>Número Máximo de Tweets </h5>
+          <%= select_tag :p, options_for_select([100,500,1000,2500,5000,25000]) %>
+
+    			<%= submit_tag "Buscar" , :onclick => "javascript: alterarImagem('img', 'icone2.png');" %>
+				<% end %>
+
+				<%= image_tag "icone.png" , :id =>"img" %>
+			</div>
+		</div>
+			
+		<div class="span10">
+       		<div class="well well-large">
+          <h5> 
+          Ferramenta capaz de extrair dados da rede social Twitter, e tem como objetivo permitir uma visualização dos dados de maneira prática e funcional.
+          <br> 
+          <br>Os dados dos Tweets poderão ser extraídos das seguintes maneiras:
+          <br>
+          <span class="icon-hand-right" aria-hidden="true"></span>
+          Por assuntos recentementes publicados nos últimos dias.
+          <br> 
+          <span class="icon-hand-right" aria-hidden="true"></span>
+          Pelo assuntos que está sendo debatido em tempo real.
+          </h5>
+       		</div>
+    </div>
+	</div>
+</div>
+</body>
+
+<footer>
+  <ol class="breadcrumb">
+    <p class="muted credit">Trabalho de Conclusão de Curso do Aluno: Matheus Moreira da Silva.</p>
+  </ol>
+</footer>

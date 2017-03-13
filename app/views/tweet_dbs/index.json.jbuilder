@@ -1,0 +1,1 @@
+json.array! @tweet_dbs, partial: 'tweet_dbs/tweet_db', as: :tweet_db
