@@ -41,7 +41,7 @@ class IniciosController < ApplicationController
 	  		config.access_token_secret = "MnitBUBh8PRCem7DbIdUBSnPB6MlhLxE5Co7tk3nqGyYO"
 		end
 
-=begin		client.search(@parametro , result_type: @result).take(@limite_max.to_i).each do |a|
+		client.search(@parametro , result_type: @result).take(@limite_max.to_i).each do |a|
 
 		  	#CRIADOS
 		  	criador = a.uri.to_s
@@ -80,7 +80,7 @@ class IniciosController < ApplicationController
 				r.dispositivo = tipo_dispositivo
 			r.save
 		end
-=end
+
 		mnr = Mineracao.new(@parametro, @hora_atual, @tipo_de_analise, @limite_max.to_i)
 
 		mnr.analise_de_padrao_e_sentimentos
